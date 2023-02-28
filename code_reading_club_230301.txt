@@ -1,0 +1,69 @@
+sign = 'x'
+open_spots = 1, 2, 3, 4, 5, 6, 7, 8, 9
+player_signs = 'x', 'o'
+game = 'on'
+spot_1 = '.'
+spot_2 = '.'
+spot_3 = '.'
+spot_4 = '.'
+spot_5 = '.'
+spot_6 = '.'
+spot_7 = '.'
+spot_8 = '.'
+spot_9 = '.'
+print 'Welcome!'
+print spot_1 spot_2 spot_3
+print spot_4 spot_5 spot_6
+print spot_7 spot_8 spot_9
+print ' '
+for i in range 1 to 9
+    if game is 'on'
+        choice = ask 'Player ' sign ', which spot?'
+        if choice in open_spots
+            remove choice from open_spots
+            if choice is 1
+                spot_1 = sign
+            if choice is 2
+                spot_2 = sign
+            if choice is 3
+                spot_3 = sign
+            if choice is 4
+                spot_4 = sign
+            if choice is 5
+                spot_5 = sign
+            if choice is 6
+                spot_6 = sign
+            if choice is 7
+                spot_7 = sign
+            if choice is 8
+                spot_8 = sign
+            if choice is 9
+                spot_9 = sign
+        else
+            print 'That spot was already taken'
+        print spot_1 spot_2 spot_3
+        print spot_4 spot_5 spot_6
+        print spot_7 spot_8 spot_9
+        print ' '
+        winner = '.'
+        if spot_1 is spot_2 and spot_2 is spot_3
+            winner = spot_1
+        if winner is '.' and spot_4 is spot_5 and spot_5 is spot_6
+            winner = spot_4
+        if winner is '.' and spot_7 is spot_8 and spot_8 is spot_9
+            winner = spot_7
+        if winner is '.' and spot_1 is spot_4 and spot_4 is spot_7
+            winner = spot_1
+        if winner is '.' and spot_2 is spot_5 and spot_5 is spot_8
+            winner = spot_2
+        if winner is '.' and spot_3 is spot_6 and spot_6 is spot_9
+            winner = spot_3
+            
+        if winner in player_signs
+            print 'Player ' winner ' won!'
+            game = 'over'
+        else
+            if sign is 'x'
+                sign = 'o'
+            else
+                sign = 'x'
