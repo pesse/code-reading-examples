@@ -1,0 +1,64 @@
+player1_name = ask 'Wie heißt du, Spieler 1?'
+player2_name = ask 'Wie heißt du, Spieler 2?'
+max_rounds = ask 'Wie viele Runden möchtest du spielen?'
+valid_choices = [1, 2, 3]
+
+player1_score = 0
+player2_score = 0
+
+if max_rounds > 5:
+  print 'Das sind zu viele'
+else:
+  for round in range 1 to max_rounds:
+    print '+++++++++++'
+    print '+ Runde ' round ' +'
+    print '+++++++++++'
+    print player1_name ' ist dran - ' player2_name ' bitte wegschauen'
+    choice_player1 = ask 'Gib ein: 1 für Schere, 2 für Stein, 3 für Papier'
+    if choice_player1 in valid_choices:
+      print 'Ok'
+    else:
+      print 'Fehlerhafte Eingabe, Papier wird genommen'
+      choice_player1 = 3
+    
+    print player2_name ' ist dran - ' player1_name ' bitte wegschauen'
+    choice_player2 = ask 'Gib ein: 1 für Schere, 2 für Stein, 3 für Papier'
+    if choice_player1 in valid_choices:
+      print 'Ok'
+    else:
+      print 'Fehlerhafte Eingabe, Papier wird genommen'
+      choice_player1 = 3
+    
+    print '-----------------------'
+    if choice_player1 is choice_player2:
+      print 'Unentschieden!'
+    elif choice_player1 is 1 and choice_player2 is 2:
+      player2_score = player2_score+1
+      print player2_name ' gewinnt Runde ' round
+    elif choice_player1 is 1 and choice_player2 is 3:
+      player1_score = player1_score+1
+      print player1_name ' gewinnt Runde ' round
+    elif choice_player1 is 2 and choice_player2 is 1:
+      player1_score = player1_score+1
+      print player1_name ' gewinnt Runde ' round
+    elif choice_player1 is 2 and choice_player2 is 3:
+      player2_score = player2_score+1
+      print player2_name ' gewinnt Runde ' round
+    elif choice_player1 is 3 and choice_player2 is 1:
+      player2_score = player2_score+1
+      print player2_name ' gewinnt Runde ' round
+    elif choice_player1 is 3 and choice_player2 is 2:
+      player1_score = player1_score+1
+      print player1_name ' gewinnt Runde ' round
+      
+    print '-----------------------'
+        
+        
+print '==================================='
+if player1_score is player2_score:
+  print 'Das Duell endet unentschieden!'
+elif player1_score > player2_score:
+  print player1_name ' gewinnt das Duell ' player1_score ':' player2_score '!'
+else:
+  print player2_name ' gewinnt das Duell ' player2_score ':' player1_score '!'
+print '==================================='
