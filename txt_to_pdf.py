@@ -10,10 +10,10 @@ def add_line_numbers(input_file, output_file):
 
     # Define the font and font size for line numbers
     line_number_font = "Courier"
-    line_number_font_size = 10
+    line_number_font_size = 9
 
     # Open the input file and read its contents
-    with open(input_file, "r") as file:
+    with open(input_file, "r", encoding="UTF-8") as file:
         lines = file.readlines()
 
     # Calculate the line height based on font size
@@ -28,8 +28,8 @@ def add_line_numbers(input_file, output_file):
     # Iterate over each line of the text file
     for line_number, line in enumerate(lines, start=1):
         # Replace tabs with three spaces for indentation
-        line = line.replace("\t", "")
-        line = line.replace("    ", "  ")
+        line = line.replace("\t", "   ")
+        #line = line.replace("    ", "  ")
 
         # Calculate the y-coordinate for the line
         y = height - (line_number * line_height)
@@ -47,8 +47,10 @@ def add_line_numbers(input_file, output_file):
     c.save()
 
 # Specify the input text file and output PDF file
-input_file = "examples\code_reading_at_the_beach_230614.txt"
-output_file = "examples\code_reading_at_the_beach_230614.pdf"
+inputFileName = input("File to convert:")
+inputFileNameWithoutSuffix = inputFileName.replace(".txt", "")
+input_file = f"examples\{inputFileName}"
+output_file = f"examples\{inputFileNameWithoutSuffix}.pdf"
 
 # Generate the PDF with line numbers
 add_line_numbers(input_file, output_file)
