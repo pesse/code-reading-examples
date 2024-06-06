@@ -7,6 +7,8 @@ def add_line_numbers(input_file, output_file):
     # Set up the canvas
     c = canvas.Canvas(output_file, pagesize=letter)
     width, height = letter
+    
+    y = height - 30
 
     # Define the font and font size for line numbers
     line_number_font = "Courier"
@@ -32,7 +34,10 @@ def add_line_numbers(input_file, output_file):
         #line = line.replace("    ", "  ")
 
         # Calculate the y-coordinate for the line
-        y = height - (line_number * line_height)
+        if y < 30:
+            c.showPage()
+            y = height -30
+            
 
         # Draw the line number on the left side of the page, respecting whitespaces and indentation
         line_number_text = str(line_number).rjust(max_line_number_width)
@@ -42,6 +47,8 @@ def add_line_numbers(input_file, output_file):
         # Draw the line of text next to the line number
         c.setFont("Courier", 10)
         c.drawString(40, y, line.rstrip())
+        
+        y -= line_height
 
     # Save the PDF
     c.save()
