@@ -1,0 +1,184 @@
+      *    *************************************************************
+      *    *************************************************************
+      *
+      *    Programm    : CBLDIFNP
+      *    Beschreibung: Ermittlung und Logging von Textunterschieden
+      *
+      *    *************************************************************
+      *    *************************************************************
+
+      *    *************************************************************
+      *    WORKING-STORAGE
+      *    *************************************************************
+   WS
+
+      *    *************************************************************
+      *    LOG DETAILS DATA
+      *    *************************************************************
+           WG-LOG-DETAILS
+             WS-LOG-DETAILS                      N03 V ZERO
+             WT-LOG-DETAILS                      OCCURS 600
+               WX-LOG-DETAILS                    X79 V SPACES
+
+      *    *************************************************************
+      *    LINKAGE
+      *    *************************************************************
+
+   SYLK    TP-LINKAGE CBLDIFDS-PARMS
+           % INCLUDE COPYLIB(CBLDIFDS)
+
+   NTRY
+      *    *************************************************************
+      *    PROCEDURE DIVISION   PROCEDURE DIVISION
+      *    *************************************************************
+           PERFORM I-INIT
+           PERFORM P-DIFF-DATA
+      *
+           IF WS-LOG-DETAILS > 0
+             PERFORM P-DO-LOG-MSG
+           END-IF
+
+      *    ************************************************************
+   PARA    I-INIT
+      *    ************************************************************
+           IF CBLDIFDS-IX-TX = SPACES
+             CBLDIFDS-IX-TX = 'CBLDIFNP'
+           END-IF
+      *
+           IF CBLDIFDS-IX-PRZ-TYP = SPACES
+             CBLDIFDS-IX-PRZ-TYP = 'Z'
+           END-IF
+      *
+           IF CBLDIFDS-IN-PRZ-SEQ NOT NUMERIC
+             CBLDIFDS-IN-PRZ-SEQ = ZERO
+           END-IF
+      *
+           IF CBLDIFDS-IX-PGM-REF = SPACES
+             CBLDIFDS-IX-PGM-REF = 'P-DIFF-DATA'
+           END-IF
+      *
+           IF CBLDIFDS-IX-LOG-SEVERITY = ZERO
+             CBLDIFDS-IX-LOG-SEVERITY = 8
+           END-IF
+      *
+           IF CBLDIFDS-IX-LOG-HDR-TXT = SPACES
+             CBLDIFDS-IX-LOG-HDR-TXT = 'Vorher-Nachher-Vergleich'
+           END-IF
+
+      *    *************************************************************
+      *    PARAGRAPH WORKING SPACE
+      *    *************************************************************
+   WS
+           PG-DIFF-DATA
+             PN-DIFDAT-PAGE                                 N03
+             PN-DIFDAT-PAGE-ROW                             N02
+             PN-DIFDAT-WS1                                  C17-3
+      *    ************************************************************
+   PARA    P-DIFF-DATA
+      *    ************************************************************
+           INITIALIZE WG-LOG-DETAILS
+           PERFORM VARYING PN-DIFDAT-WS1 FROM 1 BY 1
+           ...       UNTIL PN-DIFDAT-WS1 > 200
+             PERFORM P-COMPARE-OLD-NEW(PN-DIFDAT-WS1)
+      *    END-PERFORM
+
+      *    *************************************************************
+      *    PARAGRAPH WORKING SPACE
+      *    *************************************************************
+   WS
+           PG-COMPARE-OLD-NEW
+             PN-COMPON-SUB                                  N03
+             PX-COMPON-DATA-OLD                             X79
+             PX-COMPON-DATA-NEW                             X79
+      *    *************************************************************
+   PARA    P-COMPARE-OLD-NEW(+PN-COMPON-SUB)
+      *    *************************************************************
+           PX-COMPON-DATA-OLD = CBLDIFDS-IX-OLD-DATA(PN-COMPON-SUB)
+           PX-COMPON-DATA-NEW = CBLDIFDS-IX-NEW-DATA(PN-COMPON-SUB)
+      *
+           IF PX-COMPON-DATA-OLD NOT = PX-COMPON-DATA-NEW
+             PERFORM P-ADD-LOG-DETAILS(PN-COMPON-SUB)
+           END-IF
+
+      *    *************************************************************
+      *    PARAGRAPH WORKING SPACE
+      *    *************************************************************
+   WS
+           PG-ADD-LOG-DETAILS
+             PN-ALGDTL-SUB                                  N03
+             PX-ALGDTL-DATA-OLD                             X79
+             PX-ALGDTL-DATA-NEW                             X79
+             PN-ALGDTL-PAGE                                 N03
+             PN-ALGDTL-PAGE-ROW                             N02
+      *    *************************************************************
+   PARA    P-ADD-LOG-DETAILS(+PN-ALGDTL-SUB)
+      *    *************************************************************
+           PX-ALGDTL-DATA-OLD = CBLDIFDS-IX-OLD-DATA(PN-ALGDTL-SUB)
+           PX-ALGDTL-DATA-NEW = CBLDIFDS-IX-NEW-DATA(PN-ALGDTL-SUB)
+           PN-ALGDTL-PAGE     = ((PN-ALGDTL-SUB - 1) / 13) + 1
+           PN-ALGDTL-PAGE-ROW = FUNCTION MOD(PN-ALGDTL-SUB - 1, 13) + 1
+      *
+           WS-LOG-DETAILS <+ 1
+           STRING 'Seite: ' PN-ALGDTL-PAGE
+           ...    ' / '
+           ...    'Zeile: ' PN-ALGDTL-PAGE-ROW
+           ...    ' (vorher / nachher)'
+           ... DELIMITED SIZE INTO WX-LOG-DETAILS(WS-LOG-DETAILS)
+      *
+           WS-LOG-DETAILS <+ 1
+           WX-LOG-DETAILS(WS-LOG-DETAILS) = PX-ALGDTL-DATA-OLD
+      *
+           WS-LOG-DETAILS <+ 1
+           WX-LOG-DETAILS(WS-LOG-DETAILS) = PX-ALGDTL-DATA-NEW
+
+      *    *************************************************************
+      *    PARAGRAPH WORKING SPACE
+      *    *************************************************************
+   WS
+           PG-DO-LOG-MSG
+             PN-LOGMSG-WS1                                  C17-3
+      *    *************************************************************
+   PARA    P-DO-LOG-MSG
+      *    *************************************************************
+           PERFORM VARYING PN-LOGMSG-WS1 FROM 0 BY 10
+           ...       UNTIL PN-LOGMSG-WS1 > WS-LOG-DETAILS
+              PERFORM P-DO-LOG-MSG-PART(PN-LOGMSG-WS1)
+      *    END-PERFORM
+
+      *    *************************************************************
+      *    PARAGRAPH WORKING SPACE
+      *    *************************************************************
+   WS
+           PG-DO-LOG-MSG-PART
+             PN-LGMGPT-SUB                                  N03
+             PN-LGMGPT-WS1                                  C17-3
+             PN-LGMGPT-WS2                                  C17-3
+      *    *************************************************************
+   PARA    P-DO-LOG-MSG-PART(+PN-LGMGPT-SUB)
+      *    *************************************************************
+           INITIALIZE PN-LGMGPT-WS2
+           INITIALIZE CBLLOGDS-LT-DTL-TAB
+      *
+           PERFORM VARYING PN-LGMGPT-WS1 FROM 1 BY 1
+           ...       UNTIL PN-LGMGPT-WS1 > 10
+           ...          OR PN-LGMGPT-WS2 >= WS-LOG-DETAILS
+             PN-LGMGPT-WS2 = PN-LGMGPT-SUB + PN-LGMGPT-WS1
+             CBLLOGDS-LX-DTL-TEXT(PN-LGMGPT-WS1) =
+             ...                           WX-LOG-DETAILS(PN-LGMGPT-WS2)
+           END-PERFORM
+      *
+           CBLLOGDS-ON-SEVERITY    = CBLDIFDS-IX-LOG-SEVERITY
+           CBLLOGDS-OX-SENDER      = CBLDIFDS-IX-TX
+           CBLLOGDS-OX-MODUL       = CBLDIFDS-IX-TX
+           CBLLOGDS-OG-PRZ-ID      = CBLDIFDS-IG-PRZ-ID
+           CBLLOGDS-OX-PGM-REF     = CBLDIFDS-IX-PGM-REF
+           CBLLOGDS-OX-HEADER-TEXT = CBLDIFDS-IX-LOG-HDR-TXT
+      *
+           PERFORM CBLLOGST-DO-LOG-MSG
+
+      *    *************************************************************
+      *    STUBS
+      *    *************************************************************
+      *
+      *    LOG-STUB
+   STUB    CBLLOGST

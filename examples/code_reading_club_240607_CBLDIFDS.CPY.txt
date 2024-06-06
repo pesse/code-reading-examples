@@ -1,0 +1,29 @@
+      ******************************************************************
+      *
+      *    Stub:       : CBLDIFDS
+      *    Beschreibung: Aufruf-Schnittstelle für Stub CBLDIFNP
+      *                  Ermittlung und Logging von Textunterschieden
+      *
+      ******************************************************************
+       01  CBLDIFDS-PARMS.
+           05 CBLDIFDS-INBOUND-DATA.
+      ******************************************************************
+      *       Common data
+      ******************************************************************
+              10 CBLDIFDS-IG-COMMON-DATA.
+                 15 CBLDIFDS-IX-TX               PIC X(008).
+                 15 CBLDIFDS-IG-PRZ-ID.
+                     20 CBLDIFDS-IX-PRZ-TYP      PIC X(001).
+                     20 CBLDIFDS-IN-PRZ-SEQ      PIC 9(004).
+                 15 CBLDIFDS-IX-PGM-REF          PIC X(030).
+      ******************************************************************
+      *       Processing data
+      ******************************************************************
+              10 CBLDIFDS-IX-LOG-SEVERITY       PIC 9(02) VALUE ZEROES.
+              10 CBLDIFDS-IX-LOG-HDR-TXT        PIC X(60) VALUE SPACES.
+              10 CBLDIFDS-IG-OLD-DATA.
+                 15 CBLDIFDS-IT-OLD-DATA        OCCURS 200 TIMES.
+                    20 CBLDIFDS-IX-OLD-DATA     PIC X(79) VALUE SPACES.
+              10 CBLDIFDS-IG-NEW-DATA.
+                 15 CBLDIFDS-IT-NEW-DATA        OCCURS 200 TIMES.
+                    20 CBLDIFDS-IX-NEW-DATA     PIC X(79) VALUE SPACES.
