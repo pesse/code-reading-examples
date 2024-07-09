@@ -30,6 +30,7 @@ public class RockPaperScissors {
                 // Get the computer's choice
                 int computerChoice = random.nextInt(3) + 1;
 
+                // Display the choices
                 String playerChoiceStr = choiceToString(playerChoice);
                 String computerChoiceStr = choiceToString(computerChoice);
                 System.out.print(playerChoiceStr + " - " + computerChoiceStr + ": ");
